@@ -60,7 +60,7 @@ contract MyContract is ERC721, ERC721Enumerable, ERC721URIStorage {
         if (msg.sender != owner) {
             require(
                 msg.value >= mintPrice,
-                "The MATIC sent is not correct ####"
+                "The MATIC sent is not correct ##########1"
             );
         }
         uint256 mintIndex = totalSupply(); // totalSupply() is a function of IERC721Enumerable which Returns the total amount of tokens stored by the contract.
