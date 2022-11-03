@@ -101,6 +101,10 @@ async function main() {
 
   //   console.log("#### Interface: ", interface);
   console.log("#### Contract deployed to", result.options.address);
+  fs.writeFileSync(
+    path.join(__dirname, "createdContractAddress.txt"),
+    result.options.address
+  );
 
   //   Store ABI (Application Binary Interface) & Contract Bytecode
   fs.writeFileSync(
