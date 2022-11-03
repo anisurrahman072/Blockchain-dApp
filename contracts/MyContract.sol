@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract MyContract is ERC721, ERC721Enumerable, ERC721URIStorage {
     using SafeMath for uint256;
@@ -58,20 +59,30 @@ contract MyContract is ERC721, ERC721Enumerable, ERC721URIStorage {
         return "Hello from Contract";
     }
 
+    function getOwnerPublicAddress() public view returns (address) {
+        return owner;
+    }
+
     // Bellow "public" (a Modifier) is used here as this bellow mint() method will be publicly accessible
     // Bellow "payable" (a Modifier) is used here as we are goint to take payment from the caller of the bellow mint() method
-    function mint(string memory _uri) public payable {
-        if (msg.sender != owner) {
-            require(
-                msg.value >= mintPrice,
-                "The MATIC sent is not correct ##########1"
-            );
-        }
+    function mint(string memory _uri) public payable returns (string memory) {
+        // if (msg.sender != owner) {
+        //     require(
+        //         msg.value >= mintPrice,
+        //         "The MATIC sent is not correct ##########1"
+        //     );
+        // }
         uint256 mintIndex = totalSupply(); // totalSupply() is a function of IERC721Enumerable which Returns the total amount of tokens stored by the contract.
         emit printMintIndex(mintIndex);
 
         _safeMint(msg.sender, mintIndex); // Here "msg.sender" is the public address of whoever is calling this smart Contract mint() method
 
         _setTokenURI(mintIndex, _uri); // This _setTokenURI() method will add all the metadata to thi specific Token
+
+        string memory ss = string.concat(
+            Strings.toString(mintPrice),
+            Strings.toString(msg.value)
+        );
+        return ss;
     }
 }
