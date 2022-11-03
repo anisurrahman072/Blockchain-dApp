@@ -54,6 +54,10 @@ contract MyContract is ERC721, ERC721Enumerable, ERC721URIStorage {
 
     event printMintIndex(uint256 indexed mintIndex);
 
+    function interactionFromDapp() public pure returns (string memory) {
+        return "Hello from Contract";
+    }
+
     // Bellow "public" (a Modifier) is used here as this bellow mint() method will be publicly accessible
     // Bellow "payable" (a Modifier) is used here as we are goint to take payment from the caller of the bellow mint() method
     function mint(string memory _uri) public payable {
