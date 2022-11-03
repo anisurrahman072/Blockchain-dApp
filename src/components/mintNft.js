@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import MyContract from "../web3/myContract";
+import web3 from "../web3/web3";
 
 const nftMetadataIpfsUrl =
   "https://ipfs.io/ipfs/bafyreibuvn7oa2juwi5yvrnvs75edysun63sedqtcaiawmmqsug343jdua/metadata.json";
@@ -23,8 +24,13 @@ export default function MintNft() {
   }, []);
 
   async function mint() {
+    const accounts = await web3.eth.getAccounts();
+    console.log("XXXXX:", accounts);
+
     console.log("ANIS");
-    await MyContract.methods.mint(nftMetadataIpfsUrl).call();
+    await MyContract.methods.mint(nftMetadataIpfsUrl).send({
+      from: accounts[0],
+    });
   }
 
   return (
