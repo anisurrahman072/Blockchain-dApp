@@ -5,12 +5,9 @@ pragma solidity 0.8.17;
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract MyContract is ERC721, ERC721Enumerable, ERC721URIStorage {
-    using SafeMath for uint256;
-    uint256 public constant mintPrice = 1 ether;
     address private owner;
 
     function _beforeTokenTransfer(
@@ -49,27 +46,26 @@ contract MyContract is ERC721, ERC721Enumerable, ERC721URIStorage {
     }
 
     // This bellow ERC721 inside constructor will create a ERC721 Token named as "Baseball 2" and symbol as "anis_symbol" once the Contract deployed for the first time in the Blockchain
-    constructor() ERC721("BasementSport", "BSPRT") {
+    constructor() ERC721("demo_mainnet", "DEMO") {
         owner = msg.sender;
     }
 
-    event printMintIndex(uint256 indexed mintIndex);
-
-    function interactionFromDapp() public pure returns (string memory) {
-        return "Hello from Contract";
+    modifier onlyOwner() {
+        require(
+            owner == msg.sender,
+            "Mint can only done by the owner of the Contract"
+        );
+        _;
     }
 
-    function getOwnerPublicAddress() public view returns (address) {
-        return owner;
-    }
-
-    // Bellow "public" (a Modifier) is used here as this bellow mint() method will be publicly accessible
-    // Bellow "payable" (a Modifier) is used here as we are goint to take payment from the caller of the bellow mint() method
-    function mint(string memory _uri) public payable {
+    function mint(address _to_mint, string memory _uri)
+        public
+        payable
+        onlyOwner
+    {
         uint256 mintIndex = totalSupply(); // totalSupply() is a function of IERC721Enumerable which Returns the total amount of tokens stored by the contract.
-        emit printMintIndex(mintIndex);
 
-        _safeMint(msg.sender, mintIndex); // Here "msg.sender" is the public address of whoever is calling this smart Contract mint() method
+        _safeMint(_to_mint, mintIndex); // Here "_to_mint" is the public address of whoever is calling this smart Contract mint() method
 
         _setTokenURI(mintIndex, _uri); // This _setTokenURI() method will add all the metadata to thi specific Token
     }
