@@ -51,6 +51,7 @@ contract MyContract is ERC721, ERC721Enumerable, ERC721URIStorage {
         owner = msg.sender;
     }
 
+    // CHECK OWNER or not
     modifier onlyOwner() {
         require(
             owner == msg.sender,
@@ -59,6 +60,7 @@ contract MyContract is ERC721, ERC721Enumerable, ERC721URIStorage {
         _;
     }
 
+    // CHECK an NFT already MINTED or not
     function alreadyMinted(string memory _metadataUrl)
         private
         view
@@ -73,41 +75,6 @@ contract MyContract is ERC721, ERC721Enumerable, ERC721URIStorage {
             }
         }
         return false;
-    }
-
-    // Demo AddMINT
-    function addMint(address _address, string memory _metadataUrl)
-        public
-        onlyOwner
-    {
-        // ERROR if ALREADY minted the NFT by anyone
-        if (alreadyMinted(_metadataUrl)) {
-            revert("The NFT has been minted already");
-        }
-
-        // Now we know, NFT is available
-        string[]
-            storage mintedNftMetadataUrls = publicAddressesWithMintedNftMetadataUrls[
-                _address
-            ];
-        if (mintedNftMetadataUrls.length > 0) {
-            // Above IF logic --> Already MINTED some NFTs before
-            // ###### Store in MAP
-            mintedNftMetadataUrls.push(_metadataUrl);
-            publicAddressesWithMintedNftMetadataUrls[
-                _address
-            ] = mintedNftMetadataUrls;
-            // ***** Store the METADATA url
-            allMintedNftMetadataUrls.push(_metadataUrl);
-        } else {
-            // Above ELSE Logic --> Totally FRESH user, want to MINT for first time
-            // ###### Store in MAP
-            publicAddressesWithMintedNftMetadataUrls[_address] = [_metadataUrl];
-            // Store the Public Adress as a MINTER
-            allMinterPublicAddresses.push(_address);
-            // ***** Store the METADATA url
-            allMintedNftMetadataUrls.push(_metadataUrl);
-        }
     }
 
     // Get all minted NFTs
@@ -183,7 +150,7 @@ contract MyContract is ERC721, ERC721Enumerable, ERC721URIStorage {
         _setTokenURI(mintIndex, _metadataUrl); // This _setTokenURI() method will add all the metadata to the specific Token
     }
 
-    // TODO: add all the functions of addMint()
+    // BLOCKCHAIN multiple minting
     function mintMultipleNfts(address _address, string[] memory _urls)
         public
         payable
