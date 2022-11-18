@@ -59,13 +59,14 @@ contract MyContract is ERC721, ERC721Enumerable, ERC721URIStorage {
         _;
     }
 
-    function alreadyMinted(
-        string[] memory mintedNftMetadataUrls,
-        string memory _metadataUrl
-    ) internal pure returns (bool) {
-        for (uint256 i = 0; i < mintedNftMetadataUrls.length; i++) {
+    function alreadyMinted(string memory _metadataUrl)
+        private
+        view
+        returns (bool)
+    {
+        for (uint256 i = 0; i < allMintedNftMetadataUrls.length; i++) {
             if (
-                keccak256(abi.encodePacked(mintedNftMetadataUrls[i])) ==
+                keccak256(abi.encodePacked(allMintedNftMetadataUrls[i])) ==
                 keccak256(abi.encodePacked(_metadataUrl))
             ) {
                 return true;
@@ -75,24 +76,32 @@ contract MyContract is ERC721, ERC721Enumerable, ERC721URIStorage {
     }
 
     // Demo AddMINT
-    function addMint(address _address, string memory _metadataUrl) public {
+    function addMint(address _address, string memory _metadataUrl)
+        public
+        onlyOwner
+    {
+        // ERROR if ALREADY minted the NFT by anyone
+        if (alreadyMinted(_metadataUrl)) {
+            revert("The NFT has been minted already");
+        }
+
+        // Now we know, NFT is available
         string[]
             storage mintedNftMetadataUrls = publicAddressesWithMintedNftMetadataUrls[
                 _address
             ];
         if (mintedNftMetadataUrls.length > 0) {
             // Above IF logic --> Already MINTED some NFTs before
-            if (!alreadyMinted(mintedNftMetadataUrls, _metadataUrl)) {
-                // Above IF logic --> MINTED some other NFTs, but didn't MINT this NFT
-                mintedNftMetadataUrls.push(_metadataUrl);
-                publicAddressesWithMintedNftMetadataUrls[
-                    _address
-                ] = mintedNftMetadataUrls;
-                // ***** Store the METADATA url
-                allMintedNftMetadataUrls.push(_metadataUrl);
-            }
+            // ###### Store in MAP
+            mintedNftMetadataUrls.push(_metadataUrl);
+            publicAddressesWithMintedNftMetadataUrls[
+                _address
+            ] = mintedNftMetadataUrls;
+            // ***** Store the METADATA url
+            allMintedNftMetadataUrls.push(_metadataUrl);
         } else {
             // Above ELSE Logic --> Totally FRESH user, want to MINT for first time
+            // ###### Store in MAP
             publicAddressesWithMintedNftMetadataUrls[_address] = [_metadataUrl];
             // Store the Public Adress as a MINTER
             allMinterPublicAddresses.push(_address);
@@ -133,27 +142,90 @@ contract MyContract is ERC721, ERC721Enumerable, ERC721URIStorage {
         return owner;
     }
 
-    // TODO: add all the functions of addMint()
-    function mint(address _to_mint, string memory _uri)
+    // BLOCKCHAIN single minting
+    function mint(address _address, string memory _metadataUrl)
         public
         payable
         onlyOwner
     {
+        // ERROR if ALREADY minted the NFT by anyone
+        if (alreadyMinted(_metadataUrl)) {
+            revert("The NFT has been minted already");
+        }
+
+        // Now we know, NFT is available
+        string[]
+            storage mintedNftMetadataUrls = publicAddressesWithMintedNftMetadataUrls[
+                _address
+            ];
+        if (mintedNftMetadataUrls.length > 0) {
+            // Above IF logic --> Already MINTED some NFTs before
+            // ###### Keep previous values safely & Store in MAP
+            mintedNftMetadataUrls.push(_metadataUrl);
+            publicAddressesWithMintedNftMetadataUrls[
+                _address
+            ] = mintedNftMetadataUrls;
+            // ***** Store the METADATA url
+            allMintedNftMetadataUrls.push(_metadataUrl);
+        } else {
+            // Above ELSE Logic --> Totally FRESH user, want to MINT for first time
+            // ###### Store in MAP
+            publicAddressesWithMintedNftMetadataUrls[_address] = [_metadataUrl];
+            // +++++ Store the Public Adress as a MINTER
+            allMinterPublicAddresses.push(_address);
+            // ***** Store the METADATA url
+            allMintedNftMetadataUrls.push(_metadataUrl);
+        }
+
+        // MINT NFT in BLOCKCHAIN + Opensea
         uint256 mintIndex = totalSupply(); // totalSupply() is a function of IERC721Enumerable which Returns the total amount of tokens stored by the contract.
-        _safeMint(_to_mint, mintIndex); // Here "_to_mint" is the public address of whoever is calling this smart Contract mint() method
-        _setTokenURI(mintIndex, _uri); // This _setTokenURI() method will add all the metadata to thi specific Token
+        _safeMint(_address, mintIndex); // Here "_address" is the public address of whoever is going to MINT the NFT
+        _setTokenURI(mintIndex, _metadataUrl); // This _setTokenURI() method will add all the metadata to the specific Token
     }
 
     // TODO: add all the functions of addMint()
-    function mintMultipleNfts(address _to_mint, string[] memory _urls)
+    function mintMultipleNfts(address _address, string[] memory _urls)
         public
         payable
         onlyOwner
     {
         for (uint256 i = 0; i < _urls.length; i++) {
-            uint256 mintIndex = totalSupply();
-            _safeMint(_to_mint, mintIndex);
-            _setTokenURI(mintIndex, _urls[i]);
+            string memory _metadataUrl = _urls[i];
+
+            // SKIP if ALREADY minted the NFT by anyone
+            if (!alreadyMinted(_metadataUrl)) {
+                // Now we know, NFT is available
+                string[]
+                    storage mintedNftMetadataUrls = publicAddressesWithMintedNftMetadataUrls[
+                        _address
+                    ];
+
+                if (mintedNftMetadataUrls.length > 0) {
+                    // Above IF logic --> Already MINTED some NFTs before
+                    // ###### Keep previous values safely & Store in MAP
+                    mintedNftMetadataUrls.push(_metadataUrl);
+                    publicAddressesWithMintedNftMetadataUrls[
+                        _address
+                    ] = mintedNftMetadataUrls;
+                    // ***** Store the METADATA url
+                    allMintedNftMetadataUrls.push(_metadataUrl);
+                } else {
+                    // Above ELSE Logic --> Totally FRESH user, want to MINT for first time
+                    // ###### Store in MAP
+                    publicAddressesWithMintedNftMetadataUrls[_address] = [
+                        _metadataUrl
+                    ];
+                    // +++++ Store the Public Adress as a MINTER
+                    allMinterPublicAddresses.push(_address);
+                    // ***** Store the METADATA url
+                    allMintedNftMetadataUrls.push(_metadataUrl);
+                }
+
+                // MINT NFT in BLOCKCHAIN + Opensea
+                uint256 mintIndex = totalSupply(); // totalSupply() is a function of IERC721Enumerable which Returns the total amount of tokens stored by the contract.
+                _safeMint(_address, mintIndex); // Here "_address" is the public address of whoever is going to MINT the NFT
+                _setTokenURI(mintIndex, _metadataUrl); // This _setTokenURI() method will add all the metadata to the specific Token
+            }
         }
     }
 }
