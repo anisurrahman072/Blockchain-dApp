@@ -46,8 +46,9 @@ async function main() {
       data: contracts["MyContract.sol"]["MyContract"].evm.bytecode.object,
     })
     .send({
-      gasPrice: 210000000000,
-      gas: 26000000,
+      // gasPrice: 210000000000, // MAINNET
+      // gas: 26000000, // MAINNET
+      gas: "5000000", // Mumbai Testnet
       from: process.env.REACT_APP_PUBLIC_ADDRESS_FOR_GAS_FEE,
     });
 

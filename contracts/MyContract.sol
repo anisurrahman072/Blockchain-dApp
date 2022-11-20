@@ -47,7 +47,7 @@ contract MyContract is ERC721, ERC721Enumerable, ERC721URIStorage {
     }
 
     // This bellow ERC721 inside constructor will create a ERC721 Token named as "Baseball 2" and symbol as "anis_symbol" once the Contract deployed for the first time in the Blockchain
-    constructor() ERC721("demo_mainnet", "DEMO") {
+    constructor() ERC721("anis_1", "DEMO") {
         owner = msg.sender;
     }
 
