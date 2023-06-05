@@ -1,4 +1,4 @@
-export const contractAddress = "0x7f8B6C59B6305bFf8e01306B24ab038999f54F62";
+export const contractAddress = "0xb857194738bF78Fb98577FD9d9BF3B96BA18D686";
 
 export const abi = [
   {
@@ -74,21 +74,6 @@ export const abi = [
       "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
   },
   {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "mintIndex",
-        type: "uint256",
-      },
-    ],
-    name: "printMintIndex",
-    type: "event",
-    signature:
-      "0xab245c0b77810e016f855ede98aa46accd2dd4e84870404ac6b686624e0fa805",
-  },
-  {
     inputs: [
       { internalType: "address", name: "to", type: "address" },
       { internalType: "uint256", name: "tokenId", type: "uint256" },
@@ -119,21 +104,12 @@ export const abi = [
   },
   {
     inputs: [],
-    name: "getOwnerPublicAddress",
+    name: "getOwner",
     outputs: [{ internalType: "address", name: "", type: "address" }],
     stateMutability: "view",
     type: "function",
     constant: true,
-    signature: "0x6b364592",
-  },
-  {
-    inputs: [],
-    name: "interactionFromDapp",
-    outputs: [{ internalType: "string", name: "", type: "string" }],
-    stateMutability: "pure",
-    type: "function",
-    constant: true,
-    signature: "0x8a0043b9",
+    signature: "0x893d20e8",
   },
   {
     inputs: [
@@ -148,22 +124,15 @@ export const abi = [
     signature: "0xe985e9c5",
   },
   {
-    inputs: [{ internalType: "string", name: "_uri", type: "string" }],
+    inputs: [
+      { internalType: "address", name: "_address", type: "address" },
+      { internalType: "string", name: "_metadataUrl", type: "string" },
+    ],
     name: "mint",
-    outputs: [],
-    stateMutability: "payable",
-    type: "function",
-    payable: true,
-    signature: "0xd85d3d27",
-  },
-  {
-    inputs: [],
-    name: "mintPrice",
     outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-    stateMutability: "view",
+    stateMutability: "nonpayable",
     type: "function",
-    constant: true,
-    signature: "0x6817c76c",
+    signature: "0xd0def521",
   },
   {
     inputs: [],
@@ -238,27 +207,6 @@ export const abi = [
     signature: "0x95d89b41",
   },
   {
-    inputs: [{ internalType: "uint256", name: "index", type: "uint256" }],
-    name: "tokenByIndex",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-    stateMutability: "view",
-    type: "function",
-    constant: true,
-    signature: "0x4f6ccce7",
-  },
-  {
-    inputs: [
-      { internalType: "address", name: "owner", type: "address" },
-      { internalType: "uint256", name: "index", type: "uint256" },
-    ],
-    name: "tokenOfOwnerByIndex",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-    stateMutability: "view",
-    type: "function",
-    constant: true,
-    signature: "0x2f745c59",
-  },
-  {
     inputs: [{ internalType: "uint256", name: "tokenId", type: "uint256" }],
     name: "tokenURI",
     outputs: [{ internalType: "string", name: "", type: "string" }],
@@ -266,15 +214,6 @@ export const abi = [
     type: "function",
     constant: true,
     signature: "0xc87b56dd",
-  },
-  {
-    inputs: [],
-    name: "totalSupply",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-    stateMutability: "view",
-    type: "function",
-    constant: true,
-    signature: "0x18160ddd",
   },
   {
     inputs: [

@@ -73,14 +73,7 @@ export default function MintNft() {
   useEffect(() => {
     const init = async () => {
       // Just Get a String from the Contract
-      const stringMessage = await MyContract.methods
-        .interactionFromDapp()
-        .call();
-      console.log("KKKKKK: ", stringMessage);
-      // Just Get a String from the Contract
-      const contractOwner = await MyContract.methods
-        .getOwnerPublicAddress()
-        .call();
+      const contractOwner = await MyContract.methods.getOwner().call();
       setContractOwner(contractOwner);
       console.log("Contract Owner Address: ", contractOwner);
       // Get & set accounts of who is going to mint
@@ -100,7 +93,7 @@ export default function MintNft() {
       setMintInProgress(true);
       if (accounts[0] == contractOwner) {
         const mintResponse = await MyContract.methods
-          .mint(ipfsImages[0].metaData)
+          .mint(accounts[0], ipfsImages[0].metaData)
           .send({
             from: accounts[0],
           });
@@ -114,7 +107,7 @@ export default function MintNft() {
           gasPrice: 20000000000,
         });
         const mintResponse = await MyContract.methods
-          .mint(ipfsImages[0].metaData)
+          .mint(accounts[0], ipfsImages[0].metaData)
           .send({
             from: accounts[0],
           });

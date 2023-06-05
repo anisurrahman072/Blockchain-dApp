@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-contract MyContract is ERC721, ERC721Enumerable, ERC721URIStorage {
+contract WorldCupNft2022 is ERC721, ERC721Enumerable, ERC721URIStorage {
     address private owner;
     mapping(address => string[]) publicAddressesWithMintedNftMetadataUrls;
     address[] private allMinterPublicAddresses;
